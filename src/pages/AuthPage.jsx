@@ -69,7 +69,7 @@ export default function AuthPage() {
         if (name.trim()) {
           await updateProfile(result.user, { displayName: name.trim() });
         }
-        login({ ...result.user, displayName: name.trim() || result.user.email }); // ← pass real Firebase user
+         login({ uid: result.user.uid, email: result.user.email, displayName: name.trim() || result.user.email, photoURL: result.user.photoURL }); // ← pass real Firebase user
       }
       navigate('/app');
     } catch (err) {
