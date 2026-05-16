@@ -23,53 +23,43 @@ import { logActivity, requestNotificationPermission, sendBrowserNotification } f
 
 const AppContext = createContext();
 
-// ─── STATIC DATA (not per-user) ───────────────────────
+// ─── STATIC DATA (cleaned — no demo values) ───────────
 const productivityData = {
-  weeklyScore: 82,
+  weeklyScore: 0,
   dailyScores: [
-    { day: 'Mon', score: 75, tasks: 6 }, { day: 'Tue', score: 88, tasks: 8 },
-    { day: 'Wed', score: 92, tasks: 9 }, { day: 'Thu', score: 70, tasks: 5 },
-    { day: 'Fri', score: 85, tasks: 7 }, { day: 'Sat', score: 60, tasks: 3 },
-    { day: 'Sun', score: 78, tasks: 4 },
+    { day: 'Mon', score: 0, tasks: 0 }, { day: 'Tue', score: 0, tasks: 0 },
+    { day: 'Wed', score: 0, tasks: 0 }, { day: 'Thu', score: 0, tasks: 0 },
+    { day: 'Fri', score: 0, tasks: 0 }, { day: 'Sat', score: 0, tasks: 0 },
+    { day: 'Sun', score: 0, tasks: 0 },
   ],
-  monthlyData: [
-    { month: 'Jan', completed: 45, total: 60 }, { month: 'Feb', completed: 52, total: 65 },
-    { month: 'Mar', completed: 48, total: 55 }, { month: 'Apr', completed: 62, total: 70 },
-    { month: 'May', completed: 38, total: 50 },
-  ],
-  focusHours: 6.5, streak: 12, totalXP: 2450, level: 8,
+  monthlyData: [],
+  focusHours: 0, streak: 0, totalXP: 0, level: 1,
   badges: [
-    { id: 'b1', title: 'Early Bird', description: 'Complete 5 tasks before 9 AM', icon: '🌅', earned: true, category: 'productivity' },
-    { id: 'b2', title: 'Streak Master', description: '10-day productivity streak', icon: '🔥', earned: true, category: 'productivity' },
-    { id: 'b3', title: 'Task Crusher', description: 'Complete 100 tasks total', icon: '💪', earned: false, category: 'productivity', progress: 35, target: 100 },
-    { id: 'b4', title: 'Speed Demon', description: 'Finish 5 tasks in one hour', icon: '⚡', earned: true, category: 'productivity' },
-    { id: 'b5', title: 'Night Owl', description: 'Complete tasks after midnight', icon: '🦉', earned: true, category: 'productivity' },
-    { id: 'b6', title: 'Perfectionist', description: 'Complete 10 tasks with all subtasks done', icon: '✨', earned: false, category: 'productivity', progress: 6, target: 10 },
-    { id: 'b7', title: 'Focus Champion', description: '8 hours of deep focus in one day', icon: '🎯', earned: true, category: 'focus' },
-    { id: 'b8', title: 'Zen Master', description: '50 Pomodoro sessions completed', icon: '🧘', earned: false, category: 'focus', progress: 28, target: 50 },
+    { id: 'b1', title: 'Early Bird', description: 'Complete 5 tasks before 9 AM', icon: '🌅', earned: false, category: 'productivity' },
+    { id: 'b2', title: 'Streak Master', description: '10-day productivity streak', icon: '🔥', earned: false, category: 'productivity' },
+    { id: 'b3', title: 'Task Crusher', description: 'Complete 100 tasks total', icon: '💪', earned: false, category: 'productivity', progress: 0, target: 100 },
+    { id: 'b4', title: 'Speed Demon', description: 'Finish 5 tasks in one hour', icon: '⚡', earned: false, category: 'productivity' },
+    { id: 'b5', title: 'Night Owl', description: 'Complete tasks after midnight', icon: '🦉', earned: false, category: 'productivity' },
+    { id: 'b6', title: 'Perfectionist', description: 'Complete 10 tasks with all subtasks done', icon: '✨', earned: false, category: 'productivity', progress: 0, target: 10 },
+    { id: 'b7', title: 'Focus Champion', description: '8 hours of deep focus in one day', icon: '🎯', earned: false, category: 'focus' },
+    { id: 'b8', title: 'Zen Master', description: '50 Pomodoro sessions completed', icon: '🧘', earned: false, category: 'focus', progress: 0, target: 50 },
     { id: 'b9', title: 'Marathon Runner', description: '4-hour uninterrupted focus session', icon: '🏃', earned: false, category: 'focus', progress: 0, target: 1 },
-    { id: 'b10', title: 'Deep Thinker', description: 'Accumulate 100 hours of focus time', icon: '🧠', earned: false, category: 'focus', progress: 62, target: 100 },
-    { id: 'b11', title: 'Habit Hero', description: 'Complete all habits for 7 days straight', icon: '🏅', earned: true, category: 'habits' },
-    { id: 'b12', title: 'Comeback King', description: 'Recover a broken streak within 24h', icon: '👑', earned: true, category: 'habits' },
-    { id: 'b13', title: 'Wellness Warrior', description: 'Take all recommended breaks for a week', icon: '💚', earned: false, category: 'habits', progress: 4, target: 7 },
-    { id: 'b14', title: 'AI Explorer', description: 'Use AI features 50 times', icon: '🤖', earned: false, category: 'ai', progress: 22, target: 50 },
-    { id: 'b15', title: 'Team Player', description: 'Collaborate on 20 tasks', icon: '🤝', earned: true, category: 'social' },
-    { id: 'b16', title: 'Mentor', description: 'Assign tasks to 5 team members', icon: '🎓', earned: false, category: 'social', progress: 3, target: 5 },
-    { id: 'b17', title: 'Trailblazer', description: 'Use NexusAI for 30 consecutive days', icon: '🚀', earned: false, category: 'milestone', progress: 18, target: 30 },
-    { id: 'b18', title: 'Inbox Zero', description: 'Clear all pending tasks in a single day', icon: '📭', earned: true, category: 'milestone' },
+    { id: 'b10', title: 'Deep Thinker', description: 'Accumulate 100 hours of focus time', icon: '🧠', earned: false, category: 'focus', progress: 0, target: 100 },
+    { id: 'b11', title: 'Habit Hero', description: 'Complete all habits for 7 days straight', icon: '🏅', earned: false, category: 'habits' },
+    { id: 'b12', title: 'Comeback King', description: 'Recover a broken streak within 24h', icon: '👑', earned: false, category: 'habits' },
+    { id: 'b13', title: 'Wellness Warrior', description: 'Take all recommended breaks for a week', icon: '💚', earned: false, category: 'habits', progress: 0, target: 7 },
+    { id: 'b14', title: 'AI Explorer', description: 'Use AI features 50 times', icon: '🤖', earned: false, category: 'ai', progress: 0, target: 50 },
+    { id: 'b15', title: 'Team Player', description: 'Collaborate on 20 tasks', icon: '🤝', earned: false, category: 'social' },
+    { id: 'b16', title: 'Mentor', description: 'Assign tasks to 5 team members', icon: '🎓', earned: false, category: 'social', progress: 0, target: 5 },
+    { id: 'b17', title: 'Trailblazer', description: 'Use NexusAI for 30 consecutive days', icon: '🚀', earned: false, category: 'milestone', progress: 0, target: 30 },
+    { id: 'b18', title: 'Inbox Zero', description: 'Clear all pending tasks in a single day', icon: '📭', earned: false, category: 'milestone' },
   ],
 };
 
-const calendarEvents = [
-  { id: 'e1', title: 'Team Standup', date: '2026-05-13', time: '09:00', duration: 30, color: '#2563EB', type: 'meeting' },
-  { id: 'e2', title: 'Design Review', date: '2026-05-13', time: '14:00', duration: 60, color: '#8B5CF6', type: 'meeting' },
-  { id: 'e3', title: 'Focus Time - Development', date: '2026-05-14', time: '10:00', duration: 120, color: '#22C55E', type: 'focus' },
-  { id: 'e4', title: 'Sprint Planning', date: '2026-05-15', time: '11:00', duration: 90, color: '#EF4444', type: 'meeting' },
-  { id: 'e5', title: 'Client Presentation', date: '2026-05-16', time: '15:00', duration: 60, color: '#F59E0B', type: 'meeting' },
-  { id: 'e6', title: 'Code Review Session', date: '2026-05-14', time: '16:00', duration: 45, color: '#2563EB', type: 'meeting' },
-  { id: 'e7', title: 'AI Integration Research', date: '2026-05-15', time: '09:00', duration: 120, color: '#22C55E', type: 'focus' },
-];
+// ─── Empty calendar — users add their own events ───────
+const calendarEvents = [];
 
+// ─── Team members stay as static demo ─────────────────
 const teamMembers = [
   { id: 'tm1', name: 'Sarah Chen', role: 'Lead Designer', avatar: '👩‍🎨', status: 'online', tasksCompleted: 34 },
   { id: 'tm2', name: 'Alex Rivera', role: 'Full Stack Dev', avatar: '👨‍💻', status: 'online', tasksCompleted: 42 },
@@ -79,7 +69,7 @@ const teamMembers = [
 ];
 
 const defaultNotifications = [
-  { id: 'n1', type: 'ai', title: 'Welcome to NexusAI!', message: 'Start by adding your first task.', time: 'Just now', read: false, priority: 'medium' },
+  { id: 'n1', type: 'ai', title: 'Welcome to NexusAI! 🎉', message: 'Start by adding your first task.', time: 'Just now', read: false, priority: 'medium' },
 ];
 
 const defaultHabits = [
@@ -128,18 +118,15 @@ export function AppProvider({ children }) {
 
     setDataLoading(true);
 
-    // Listen to tasks in real-time
     const tasksRef = collection(db, 'users', userId, 'tasks');
     const unsubTasks = onSnapshot(tasksRef, (snap) => {
       const loaded = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       setTasks(loaded);
     });
 
-    // Listen to habits in real-time
     const habitsRef = collection(db, 'users', userId, 'habits');
     const unsubHabits = onSnapshot(habitsRef, async (snap) => {
       if (snap.empty) {
-        // First login — seed default habits
         for (const habit of defaultHabits) {
           await setDoc(doc(db, 'users', userId, 'habits', habit.id), habit);
         }
@@ -149,18 +136,15 @@ export function AppProvider({ children }) {
       }
     });
 
-    // Load focus sessions
     const focusRef = collection(db, 'users', userId, 'focusSessions');
     const unsubFocus = onSnapshot(focusRef, (snap) => {
       const loaded = snap.docs.map(d => ({ id: d.id, ...d.data() }));
       setFocusSessions(loaded);
     });
 
-    // Load notifications
     const notifsRef = collection(db, 'users', userId, 'notifications');
     const unsubNotifs = onSnapshot(notifsRef, async (snap) => {
       if (snap.empty) {
-        // Seed welcome notification
         for (const n of defaultNotifications) {
           await setDoc(doc(db, 'users', userId, 'notifications', n.id), n);
         }
@@ -395,7 +379,6 @@ export function AppProvider({ children }) {
       photoURL: firebaseUser?.photoURL || null,
     });
 
-    // Save user profile to Firestore
     await setDoc(doc(db, 'users', uid), {
       name: firebaseUser?.displayName || firebaseUser?.email?.split('@')[0] || 'User',
       email: firebaseUser?.email || '',
