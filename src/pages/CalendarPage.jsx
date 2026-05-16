@@ -7,13 +7,17 @@ const MONTHS = ['January','February','March','April','May','June','July','August
 
 export default function CalendarPage() {
   const { calendarEvents, tasks } = useApp();
-  const [currentDate, setCurrentDate] = useState(new Date(2026, 4, 13));
+
+  // Use real current date
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
+  const [currentDate, setCurrentDate] = useState(now);
   const [view, setView] = useState('month');
-  const [selectedDate, setSelectedDate] = useState('2026-05-13');
+  const [selectedDate, setSelectedDate] = useState(todayStr);
 
   const y = currentDate.getFullYear(), m = currentDate.getMonth();
   const firstDay = new Date(y, m, 1).getDay(), daysInMonth = new Date(y, m + 1, 0).getDate();
-  const today = '2026-05-13';
   const ds = (day) => `${y}-${String(m + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
   const evFor = (d) => calendarEvents.filter(e => e.date === d);
   const tkFor = (d) => tasks.filter(t => t.deadline === d);
@@ -44,13 +48,16 @@ export default function CalendarPage() {
           <div className="grid grid-cols-7 gap-px flex-1 auto-rows-fr overflow-y-auto">
             {Array.from({ length: firstDay }).map((_, i) => <div key={`e${i}`} className="p-1" />)}
             {Array.from({ length: daysInMonth }, (_, i) => {
-              const day = i + 1, d = ds(day), ev = evFor(d), tk = tkFor(d), isToday = d === today, isSel = d === selectedDate;
+              const day = i + 1, d = ds(day), ev = evFor(d), tk = tkFor(d);
+              const isToday = d === todayStr;
+              const isSel = d === selectedDate;
               return (
                 <button key={day} onClick={() => setSelectedDate(d)}
                   className={`p-1.5 rounded-md text-left transition-colors min-h-[56px] flex flex-col ${isSel ? 'bg-accent-blue-soft border border-accent-blue-border' : 'hover:bg-surface-200/40 border border-transparent'}`}>
                   <span className={`text-[11px] inline-flex items-center justify-center w-5 h-5 rounded-full ${isToday ? 'bg-accent-blue text-white' : 'text-text-secondary'}`}>{day}</span>
                   <div className="flex flex-col gap-0.5 mt-0.5">
                     {ev.slice(0, 2).map(e => <div key={e.id} className="text-[9px] px-1 py-px rounded truncate" style={{ background: `${e.color}18`, color: e.color }}>{e.title}</div>)}
+                    {tk.slice(0, 1).map(t => <div key={t.id} className="text-[9px] px-1 py-px rounded truncate bg-accent-amber/10 text-accent-amber">{t.title}</div>)}
                   </div>
                 </button>
               );
@@ -59,7 +66,9 @@ export default function CalendarPage() {
         </div>
 
         <div className="card p-4 overflow-y-auto">
-          <h2 className="text-sm font-medium text-text-primary mb-3">{selectedDate === today ? 'Today' : selectedDate}</h2>
+          <h2 className="text-sm font-medium text-text-primary mb-3">
+            {selectedDate === todayStr ? 'Today' : selectedDate}
+          </h2>
           {evFor(selectedDate).length > 0 && (
             <div className="mb-4">
               <p className="text-[10px] text-text-muted uppercase tracking-wider mb-2">Events</p>
